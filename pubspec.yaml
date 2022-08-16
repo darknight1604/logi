@@ -43,6 +43,14 @@ dependencies:
   # https://pub.dev/packages/cloud_firestore
   cloud_firestore: ^3.4.4
 
+  # Unofficial implementation of Fluent UI for Flutter. It's written based on the official documentation
+  # https://pub.dev/packages/fluent_ui
+  fluent_ui: ^3.12.0
+
+  # Being able to compare objects in Dart often involves having to override the == operator as well as hashCode.
+  # https://pub.dev/packages/equatable
+  equatable: ^2.0.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
