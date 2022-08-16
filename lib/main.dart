@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:logi/core/firebase/firebase_repository.dart';
+import 'package:logi/core/repositories/firebase_repository.dart';
 import 'package:logi/home_screen/infrastructure/repositories/fruit_repository.dart';
 import 'package:logi/home_screen/presentation/home_screen.dart';
 

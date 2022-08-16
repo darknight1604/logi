@@ -10,10 +10,14 @@ part 'basic_state.dart';
 class BasicBloc extends Bloc<BasicEvent, BasicState> {
   final FruitRepository fruitRepository;
   BasicBloc(this.fruitRepository) : super(BasicInitial()) {
-    fruitRepository.onListen(onListen);
+    // fruitRepository.onListen(onListen);
     on<GetListFruitEvent>((event, emit) async {
-      List<Fruit> results = await fruitRepository.getListFruit();
-      emit(ListFruitState(results));
+      try {
+        List<Fruit> results = await fruitRepository.getListFruit();
+        emit(ListFruitState(results));
+      } catch (e) {
+        print(e.toString());
+      }
     });
     on<ReloadListFruitEvent>((event, emit) async {
       emit(ListFruitState(event.listFruit));
