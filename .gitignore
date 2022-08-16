@@ -49,3 +49,5 @@ app.*.map.json
 pubspec.lock
 
 macos/Flutter/GeneratedPluginRegistrant.swift
+
+firebase_options.dart
