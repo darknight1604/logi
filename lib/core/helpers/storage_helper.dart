@@ -1,5 +1,3 @@
-import 'package:logi/core/base_services/logi_service.dart';
-
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, TargetPlatform;
 import 'package:logi/core/base_services/storage_behavior.dart';

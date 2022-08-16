@@ -6,11 +6,7 @@ import 'package:logi/home_screen/domain/models/fruit.dart';
 class FruitRepository {
   Future<List<Fruit>> getListFruit() async {
     List<Fruit> results = [];
-    // await db.collection("fruits").get().then((event) {
-    // for (var doc in event.docs) {
-    //   results.add(Fruit.fromJson(doc.data()));
-    // }
-    // });
+
     StorageBehavior storageBehavior = StorageHelper.getStorageBehavior();
     List<Map<String, dynamic>> listJson =
         await storageBehavior.get(path: CollectionConstant.fruits);
