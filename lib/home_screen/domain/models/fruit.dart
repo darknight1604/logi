@@ -1,15 +1,15 @@
 import 'package:equatable/equatable.dart';
 
 class Fruit extends Equatable {
-  String? name;
-  bool? active;
+  final String? name;
+  final bool? active;
 
-  Fruit({this.name, this.active});
+  const Fruit({this.name, this.active});
 
-  Fruit.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    active = json['active'];
-  }
+  factory Fruit.fromJson(Map<String, dynamic> json) => Fruit(
+        name: json['name'],
+        active: json['active'],
+      );
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -17,7 +17,7 @@ class Fruit extends Equatable {
     json['active'] = active;
     return json;
   }
-  
+
   @override
   List<Object?> get props => [name, active];
 }
