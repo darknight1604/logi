@@ -1,31 +1,10 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:firedart/firedart.dart';
+import 'package:logi/core/firebase/firebase_repository.dart';
 
-const String apiKey = 'AIzaSyAR0xsa-y73bKHOl5WKhar_CDk6wZgQAEY';
-const String projectId = 'udeep500';
-const String authDomain = 'udeep500.firebaseapp.com';
-const String databaseURL =
-    'https://udeep500-default-rtdb.asia-southeast1.firebasedatabase.app';
-const String storageBucket = "udeep500.appspot.com";
-const measurementId = "G-JYLJFM18NS";
-
-const FirebaseOptions web = FirebaseOptions(
-  apiKey: apiKey,
-  appId: '1:1023245376291:web:fe6cff203cf48c6273ca96',
-  messagingSenderId: '1023245376291',
-  projectId: projectId,
-  authDomain: authDomain,
-  databaseURL: databaseURL,
-  storageBucket: storageBucket,
-  measurementId: measurementId,
-);
-
-void main() {
-  // Firestore.initialize(projectId);
-  Firebase.initializeApp(options: web);
-  // FirebaseDatabase.instance.
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FirebaseRepository.initialFirebase();
   runApp(const LogiApp());
 }
 
@@ -77,10 +56,31 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {},
+        onPressed: _addDataFirestore,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
     );
+  }
+
+  void _addDataFirestore() async {
+    print('press');
+    final db = FirebaseFirestore.instance;
+
+//     // Create a new user with a first and last name
+//     final fruit = <String, dynamic>{
+//       "name": "Organe",
+//       "active": true,
+//     };
+
+// // Add a new document with a generated ID
+//     db.collection("fruits").add(fruit).then((DocumentReference doc) =>
+//         print('DocumentSnapshot added with ID: ${doc.id}'));
+
+    await db.collection("fruits").get().then((event) {
+      for (var doc in event.docs) {
+        print("${doc.id} => ${doc.data()}");
+      }
+    });
   }
 }

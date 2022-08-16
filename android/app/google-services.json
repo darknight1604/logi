@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1023245376291",
+    "firebase_url": "https://udeep500-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "udeep500",
+    "storage_bucket": "udeep500.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1023245376291:android:fc6f26f9e101c1be73ca96",
+        "android_client_info": {
+          "package_name": "com.example.logi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1023245376291-ghipmkfh61i9cj4l4u7rd6cvg7o2ptek.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBV466KvvlADI7jLMQRhSyRsJhsIxrEfWE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1023245376291-ghipmkfh61i9cj4l4u7rd6cvg7o2ptek.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1023245376291-0md3uihfbrmpaqgs6hfm3nhvr9f7k28m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.udeep500.logi"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
