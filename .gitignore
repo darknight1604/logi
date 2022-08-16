@@ -50,4 +50,4 @@ pubspec.lock
 
 macos/Flutter/GeneratedPluginRegistrant.swift
 
-firebase_options.dart
+lib/firebase_options.dart
