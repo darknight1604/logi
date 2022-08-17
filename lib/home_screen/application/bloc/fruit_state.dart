@@ -1,13 +1,13 @@
-part of 'basic_bloc.dart';
+part of 'fruit_bloc.dart';
 
-abstract class BasicState extends Equatable {}
+abstract class FruitState extends Equatable {}
 
-class BasicInitial extends BasicState {
+class BasicInitial extends FruitState {
   @override
   List<Object?> get props => [];
 }
 
-class ListFruitState extends BasicState {
+class ListFruitState extends FruitState {
   final List<Fruit> listFruit;
 
   ListFruitState(this.listFruit);
