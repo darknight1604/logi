@@ -17,24 +17,26 @@ class FruitRepository {
   }
 
   Future<void> addFruit(Fruit fruit) async {
-    // await db
-    //     .collection("cities")
-    //     .add(
-    //       fruit.toJson(),
-    //     )
-    //     .then(
-    //       (documentSnapshot) =>
-    //           print("Added Data with ID: ${documentSnapshot.id}"),
-    //     );
+    final behavior = StorageHelper.getStorageBehavior();
+    await behavior.add(
+        path: CollectionConstant.fruits, jsonData: fruit.toJson());
   }
 
-  // void onListen(void Function(QuerySnapshot<Object?> event) onListen) {
-  //   // final Stream<QuerySnapshot> streamController =
-  //   //     db.collection("fruits").snapshots();
+  void onListen({
+    required void Function(List<Map<String, dynamic>>) onData,
+  }) {
+    final behavior = StorageHelper.getStorageBehavior();
+    behavior.onListenCollection(
+      onData: onData,
+      path: CollectionConstant.fruits,
+    );
+  }
 
-  //   // // streamController.listen((event) {
-  //   // //   event.docs.map((e) => Fruit.fromJson(e.data() as Map<String, dynamic>));
-  //   // // });
-  //   // streamController.listen(onListen);
-  // }
+  Future<void> deleteFruit(String id) async {
+    final behavior = StorageHelper.getStorageBehavior();
+    await behavior.delete(
+      id: id,
+      path: CollectionConstant.fruits,
+    );
+  }
 }
