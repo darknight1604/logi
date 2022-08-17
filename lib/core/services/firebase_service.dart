@@ -16,7 +16,10 @@ class FirebaseService extends LogiService implements StorageBehavior {
   }
 
   @override
-  Future<void> delete() {
+  Future<bool> delete({
+    required String path,
+    required String id,
+  }) {
     // TODO: implement delete
     throw UnimplementedError();
   }
@@ -43,5 +46,13 @@ class FirebaseService extends LogiService implements StorageBehavior {
       }
     });
     return results;
+  }
+
+  @override
+  void onListenCollection({
+    required String path,
+    required void Function(List<Map<String, dynamic>>) onData,
+  }) {
+    // TODO: implement onListenCollection
   }
 }
