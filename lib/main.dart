@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logi/core/repositories/firebase_repository.dart';
-import 'package:logi/home_screen/infrastructure/repositories/fruit_repository.dart';
-import 'package:logi/home_screen/presentation/fruit_screen.dart';
+import 'package:logi/fruit_screen/infrastructure/repositories/fruit_repository.dart';
+import 'package:logi/fruit_screen/presentation/fruit_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
