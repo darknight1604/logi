@@ -21,7 +21,6 @@ class FirestoreService extends LogiService implements StorageBehavior {
     required String path,
     required String id,
   }) async {
-    print(id);
     bool result = false;
     CollectionReference collectionReference =
         Firestore.instance.collection(path);
