@@ -17,9 +17,19 @@ class FirestoreService extends LogiService implements StorageBehavior {
   }
 
   @override
-  Future<void> delete() {
-    // TODO: implement delete
-    throw UnimplementedError();
+  Future<bool> delete({
+    required String path,
+    required String id,
+  }) async {
+    print(id);
+    bool result = false;
+    CollectionReference collectionReference =
+        Firestore.instance.collection(path);
+    collectionReference.document(id).delete().then((value) {
+      print('delete success');
+      result = true;
+    });
+    return result;
   }
 
   @override
@@ -34,7 +44,6 @@ class FirestoreService extends LogiService implements StorageBehavior {
     bool result = false;
     CollectionReference collectionReference =
         Firestore.instance.collection(path);
-
     await collectionReference
         .add(jsonData)
         .then(
@@ -55,6 +64,29 @@ class FirestoreService extends LogiService implements StorageBehavior {
 
     final collection = await collectionReference.get();
     List<Document> documents = collection.toList();
-    return documents.map((e) => e.map).toList(growable: false);
+    return documents.map((e) {
+      Map<String, dynamic> json = e.map;
+      json['id'] = e.id;
+      return json;
+    }).toList(growable: false);
+  }
+
+  @override
+  void onListenCollection({
+    required String path,
+    required void Function(List<Map<String, dynamic>>) onData,
+  }) {
+    CollectionReference collectionReference =
+        Firestore.instance.collection(path);
+
+    collectionReference.stream.listen((event) {
+      List<Document> documents = event.toList();
+      List<Map<String, dynamic>> listJsonData = documents.map((e) {
+        Map<String, dynamic> json = e.map;
+        json['id'] = e.id;
+        return json;
+      }).toList();
+      onData(listJsonData);
+    });
   }
 }
