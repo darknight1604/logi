@@ -10,18 +10,22 @@ class FirebaseService extends LogiService implements StorageBehavior {
 
   @override
   Future<void> initService() async {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    }
+    db.enableNetwork();
   }
 
   @override
   Future<bool> delete({
     required String path,
     required String id,
-  }) {
-    // TODO: implement delete
-    throw UnimplementedError();
+  }) async {
+    bool result = false;
+    await db.collection(path).doc(id).delete().then((value) => result = true);
+    return result;
   }
 
   @override
@@ -31,10 +35,16 @@ class FirebaseService extends LogiService implements StorageBehavior {
   }
 
   @override
-  Future<bool> add(
-      {required String path, required Map<String, dynamic> jsonData}) {
-    // TODO: implement add
-    throw UnimplementedError();
+  Future<bool> add({
+    required String path,
+    required Map<String, dynamic> jsonData,
+  }) async {
+    bool result = false;
+    await db.collection(path).add(jsonData).then((value) {
+      print('success');
+      result = true;
+    });
+    return result;
   }
 
   @override
@@ -53,6 +63,14 @@ class FirebaseService extends LogiService implements StorageBehavior {
     required String path,
     required void Function(List<Map<String, dynamic>>) onData,
   }) {
-    // TODO: implement onListenCollection
+    db.collection(path).snapshots().listen((event) {
+      List<Map<String, dynamic>> listJsonData = event.docs.map((e) {
+        Map<String, dynamic> jsonData = e.data();
+        jsonData['id'] = e.id;
+        return jsonData;
+      }).toList();
+
+      onData(listJsonData);
+    });
   }
 }
