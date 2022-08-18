@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:logi/fruit_screen/domain/models/fruit.dart';
-import 'package:logi/fruit_screen/infrastructure/repositories/fruit_repository.dart';
+import 'package:logi/screens/fruit_screen/domain/models/fruit.dart';
+import 'package:logi/screens/fruit_screen/infrastructure/repositories/fruit_repository.dart';
 
 part 'fruit_event.dart';
 part 'fruit_state.dart';
