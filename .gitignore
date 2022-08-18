@@ -53,4 +53,5 @@ macos/Flutter/GeneratedPluginRegistrant.swift
 lib/firebase_options.dart
 
 /macos/Podfile.lock
+
 lib/gen
