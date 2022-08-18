@@ -1,13 +1,32 @@
-import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logi/core/base_services/logi_run_zoned.dart';
+import 'package:logi/core/constants/logi_constant.dart';
+import 'package:logi/core/factories/logi_run_zoned_factory.dart';
+import 'package:logi/core/logi_route.dart';
 import 'package:logi/core/repositories/firebase_repository.dart';
-import 'package:logi/fruit_screen/infrastructure/repositories/fruit_repository.dart';
-import 'package:logi/fruit_screen/presentation/fruit_screen.dart';
+import 'package:logi/screens/fruit_screen/infrastructure/repositories/fruit_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FirebaseRepository.initialFirebase();
-  runApp(const LogiApp());
+  await EasyLocalization.ensureInitialized();
+  LogiRunZoned logiRunZoned = LogiRunZonedFactory.getRunZoned();
+  logiRunZoned.runZoned(
+    () => runApp(
+      EasyLocalization(
+        supportedLocales: const [
+          Locale('en'),
+          Locale('vi'),
+        ],
+        path: 'assets/translations',
+        // startLocale: const Locale('vi'),
+        fallbackLocale: const Locale('vi'),
+        child: const LogiApp(),
+      ),
+    ),
+  );
 }
 
 class LogiApp extends StatelessWidget {
@@ -22,13 +41,16 @@ class LogiApp extends StatelessWidget {
           create: (_) => FruitRepository(),
         ),
       ],
-      child: MaterialApp(
-        title: 'Logi app',
+      child: FluentApp(
+        title: LogiConstant.appName,
         theme: ThemeData(
-          primarySwatch: Colors.blue,
-          backgroundColor: Colors.white,
+          scaffoldBackgroundColor: Colors.white,
         ),
-        home: const FruitScreen(),
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
+        initialRoute: LogiRoute.welcomeScreen,
+        onGenerateRoute: LogiRoute.onGenerateRoute,
       ),
     );
   }
