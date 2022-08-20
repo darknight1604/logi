@@ -55,3 +55,7 @@ lib/firebase_options.dart
 /macos/Podfile.lock
 
 lib/gen
+
+assets/configs/config.json
+
+.vscode
