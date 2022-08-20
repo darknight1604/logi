@@ -1,4 +1,4 @@
-import 'package:logi/core/base_services/logi_run_zoned.dart';
+import 'package:logi/core/domains/base_services/logi_run_zoned.dart';
 
 class DefaultRunZoned extends LogiRunZoned {
   @override
