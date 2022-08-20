@@ -1,6 +1,7 @@
 {
     "common":{
         "nickName": "Biệt danh",
-        "submit": "Xác nhận"
+        "submit": "Xác nhận",
+        "homeScreen": "Trang chủ"
     }
 }

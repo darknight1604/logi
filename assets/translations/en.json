@@ -1,6 +1,7 @@
 {
     "common":{
         "nickName": "Nickname",
-        "submit": "Submit"
+        "submit": "Submit",
+        "homeScreen": "Home screen"
     }
 }
