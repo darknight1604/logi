@@ -1,6 +1,6 @@
 import 'package:firedart/firedart.dart';
-import 'package:logi/core/base_services/logi_service.dart';
-import 'package:logi/core/base_services/storage_behavior.dart';
+import 'package:logi/core/domains/base_services/logi_service.dart';
+import 'package:logi/core/domains/base_services/storage_behavior.dart';
 
 class FirestoreService extends LogiService implements StorageBehavior {
   static const _projectId = 'udeep500';
@@ -25,7 +25,6 @@ class FirestoreService extends LogiService implements StorageBehavior {
     CollectionReference collectionReference =
         Firestore.instance.collection(path);
     collectionReference.document(id).delete().then((value) {
-      print('delete success');
       result = true;
     });
     return result;
@@ -38,18 +37,19 @@ class FirestoreService extends LogiService implements StorageBehavior {
   }
 
   @override
-  Future<bool> add(
-      {required String path, required Map<String, dynamic> jsonData}) async {
-    bool result = false;
+  Future<dynamic> add({
+    required String path,
+    required Map<String, dynamic> jsonData,
+  }) async {
+    dynamic result;
     CollectionReference collectionReference =
         Firestore.instance.collection(path);
-    await collectionReference
-        .add(jsonData)
-        .then(
-          (value) => result = true,
-        )
-        .onError((error, stackTrace) {
-      print(error.toString());
+    await collectionReference.add(jsonData).then(
+      (value) {
+        result = value.map;
+        result['id'] = value.id;
+      },
+    ).onError((error, stackTrace) {
       return result;
     });
 

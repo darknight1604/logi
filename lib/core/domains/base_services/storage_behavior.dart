@@ -1,5 +1,5 @@
 abstract class StorageBehavior {
-  Future<bool> add({
+  Future<dynamic> add({
     required String path,
     required Map<String, dynamic> jsonData,
   });

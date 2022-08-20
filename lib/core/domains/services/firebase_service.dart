@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:logi/core/base_services/logi_service.dart';
-import 'package:logi/core/base_services/storage_behavior.dart';
 import 'package:logi/core/constants/collection_constant.dart';
+import 'package:logi/core/domains/base_services/logi_service.dart';
+import 'package:logi/core/domains/base_services/storage_behavior.dart';
 import 'package:logi/firebase_options.dart';
 
 class FirebaseService extends LogiService implements StorageBehavior {
@@ -41,7 +41,6 @@ class FirebaseService extends LogiService implements StorageBehavior {
   }) async {
     bool result = false;
     await db.collection(path).add(jsonData).then((value) {
-      print('success');
       result = true;
     });
     return result;
