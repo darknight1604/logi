@@ -4,4 +4,5 @@ class CollectionConstant {
   static const String dev = 'dev';
   static const String prod = 'prod';
   static const String users = 'users';
+  static const String globalConversations = 'global_conversations';
 }

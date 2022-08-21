@@ -8,11 +8,15 @@ class AppConfig {
     return _instance ?? AppConfig(configData);
   }
 
-  AppConfig? get instance => _instance;
+  static AppConfig? get instance => _instance;
 
   static const String keyBlocObserver = 'blocObserver';
+
+  static const String keyProjectId = 'projectId';
 
   final Map<String, dynamic> configData;
 
   bool get blocObserver => configData[keyBlocObserver];
+
+  String get projectId => configData[keyProjectId];
 }
