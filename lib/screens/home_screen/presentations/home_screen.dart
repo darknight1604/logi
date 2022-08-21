@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logi/core/applications/authorization/authorization_bloc.dart';
+import 'package:logi/core/components/circle_button_widget.dart';
 import 'package:logi/core/components/sized_box_widget.dart';
 import 'package:logi/core/components/text_field_widget.dart';
 import 'package:logi/core/domains/models/message.dart';
@@ -11,6 +12,7 @@ import 'package:logi/core/helpers/text_style_manager.dart';
 import 'package:logi/gen/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:logi/screens/home_screen/applications/chat_message/chat_message_bloc.dart';
+import 'package:logi/screens/home_screen/applications/chat_scroll_button/chat_scroll_button_cubit.dart';
 import 'package:logi/screens/home_screen/repository/chat_repository.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -56,7 +58,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
-                    const _ChatGroupWidget(),
+                    BlocProvider<ChatScrollButtonCubit>(
+                      create: (_) => ChatScrollButtonCubit(),
+                      child: const _ChatGroupWidget(),
+                    ),
                   ],
                 ),
               ),
@@ -139,15 +144,34 @@ class _ChatGroupWidgetState extends State<_ChatGroupWidget> {
   late ScrollController scrollController;
   final itemKey = GlobalKey();
 
+  final double maxHeightPerItemMessage = 20.0;
+
   @override
   void initState() {
     super.initState();
     controller = TextEditingController();
     focusNode = FocusNode();
     scrollController = ScrollController();
-    // scrollController.addListener(() {
-    //   print('offset: ${scrollController.offset}, max: ${scrollController.position.maxScrollExtent}');
-    // });
+    scrollController.addListener(() {
+      double offset = scrollController.offset;
+      double maxScrollExtent = scrollController.position.maxScrollExtent;
+      double offsetShowButton = maxScrollExtent - (maxHeightPerItemMessage * 5);
+      final chatScrollButtonCubit =
+          BlocProvider.of<ChatScrollButtonCubit>(context);
+      final currentState = chatScrollButtonCubit.state;
+      if (offsetShowButton >= 0 &&
+          offset <= offsetShowButton &&
+          !currentState) {
+        chatScrollButtonCubit.showButton();
+        return;
+      }
+      if (offset > offsetShowButton &&
+          offset <= maxScrollExtent &&
+          currentState) {
+        chatScrollButtonCubit.hideButton();
+        return;
+      }
+    });
   }
 
   @override
@@ -185,19 +209,42 @@ class _ChatGroupWidgetState extends State<_ChatGroupWidget> {
                 }
                 return Container(
                   color: Colors.grey[200],
-                  child: ListView.separated(
-                    padding: const EdgeInsets.all(10.0),
-                    controller: scrollController,
-                    itemCount: state.messages.length + 1,
-                    separatorBuilder: (_, __) => SizedBoxWidget.h10,
-                    itemBuilder: (context, index) {
-                      if (index == state.messages.length) {
-                        return SizedBoxWidget.h15;
-                      }
-                      return _ChatMessageItemWidget(
-                        message: state.messages[index],
-                      );
-                    },
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      ListView.separated(
+                        padding: const EdgeInsets.all(10.0),
+                        controller: scrollController,
+                        itemCount: state.messages.length + 1,
+                        separatorBuilder: (_, __) => SizedBoxWidget.h10,
+                        itemBuilder: (context, index) {
+                          if (index == state.messages.length) {
+                            return SizedBoxWidget.h15;
+                          }
+                          return _ChatMessageItemWidget(
+                            message: state.messages[index],
+                          );
+                        },
+                      ),
+                      BlocBuilder<ChatScrollButtonCubit, bool>(
+                        builder: (context, state) {
+                          if (state) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 10.0),
+                              child: CircleButtonWidget(
+                                onTap: () => _scrollDown(),
+                                color: Colors.blue,
+                                child: const Icon(
+                                  Icons.arrow_downward_outlined,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            );
+                          }
+                          return Container();
+                        },
+                      ),
+                    ],
                   ),
                 );
               },
@@ -233,21 +280,11 @@ class _ChatGroupWidgetState extends State<_ChatGroupWidget> {
     );
   }
 
-  Future scrollToLastMessage() async {
-    final context = itemKey.currentContext;
-    if (context == null) return;
-    await Scrollable.ensureVisible(
-      context,
-      // alignment: 1,
-      duration: const Duration(seconds: 1),
-    );
-  }
-
   void _scrollDown() {
     try {
       if (!scrollController.hasClients) return;
       scrollController.animateTo(
-        scrollController.position.maxScrollExtent + 15,
+        scrollController.position.maxScrollExtent,
         duration: const Duration(seconds: 1),
         curve: Curves.fastOutSlowIn,
       );
