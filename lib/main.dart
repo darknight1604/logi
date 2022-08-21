@@ -58,23 +58,29 @@ class LogiApp extends StatelessWidget {
           create: (_) => ChatRepository(),
         ),
       ],
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider<AuthorizationBloc>(
-            create: (_) => AuthorizationBloc(),
-          ),
-        ],
-        child: MaterialApp(
-          title: LogiConstant.appName,
-          theme: ThemeData(
-            scaffoldBackgroundColor: Colors.white,
-          ),
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: context.locale,
-          initialRoute: LogiRoute.welcomeScreen,
-          onGenerateRoute: LogiRoute.onGenerateRoute,
-        ),
+      child: Builder(
+        builder: (context) {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider<AuthorizationBloc>(
+                create: (_) => AuthorizationBloc(
+                  RepositoryProvider.of<UserRepository>(context)
+                ),
+              ),
+            ],
+            child: MaterialApp(
+              title: LogiConstant.appName,
+              theme: ThemeData(
+                scaffoldBackgroundColor: Colors.white,
+              ),
+              localizationsDelegates: context.localizationDelegates,
+              supportedLocales: context.supportedLocales,
+              locale: context.locale,
+              initialRoute: LogiRoute.welcomeScreen,
+              onGenerateRoute: LogiRoute.onGenerateRoute,
+            ),
+          );
+        }
       ),
     );
   }

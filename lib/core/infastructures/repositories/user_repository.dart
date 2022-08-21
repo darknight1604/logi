@@ -4,10 +4,11 @@ import 'package:logi/core/domains/factories/storage_factory.dart';
 import 'package:logi/core/domains/models/user.dart';
 
 class UserRepository {
+  final String path =
+      '/${CollectionConstant.logi}/${CollectionConstant.dev}/${CollectionConstant.users}';
+  final StorageBehavior storageBehavior = StorageFactory.getStorageBehavior();
+
   Future<User?> createUser(String nickname) async {
-    String path =
-        '/${CollectionConstant.logi}/${CollectionConstant.dev}/${CollectionConstant.users}';
-    StorageBehavior storageBehavior = StorageFactory.getStorageBehavior();
     User? user;
     await storageBehavior
         .add(path: path, jsonData: User(nickname: nickname).toJson())
@@ -18,10 +19,6 @@ class UserRepository {
   }
 
   Future<List<User>> getListUser() async {
-    String path =
-        '/${CollectionConstant.logi}/${CollectionConstant.dev}/${CollectionConstant.users}';
-    StorageBehavior storageBehavior = StorageFactory.getStorageBehavior();
-
     List<Map<String, dynamic>> listJsonData =
         await storageBehavior.get(path: path);
     return listJsonData.map(
@@ -31,5 +28,9 @@ class UserRepository {
     ).toList(
       growable: false,
     );
+  }
+
+  Future<bool> deleteUser(String userId) async {
+    return await storageBehavior.delete(path: path, id: userId);
   }
 }
