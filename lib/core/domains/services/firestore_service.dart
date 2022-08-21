@@ -1,10 +1,11 @@
+import 'dart:async';
+
 import 'package:firedart/firedart.dart';
 import 'package:logi/core/domains/base_services/logi_service.dart';
 import 'package:logi/core/domains/base_services/storage_behavior.dart';
+import 'package:logi/core/helpers/app_config.dart';
 
 class FirestoreService extends LogiService implements StorageBehavior {
-  static const _projectId = 'udeep500';
-
   static final FirestoreService _instance = FirestoreService._internal();
 
   factory FirestoreService() => _instance;
@@ -13,7 +14,9 @@ class FirestoreService extends LogiService implements StorageBehavior {
 
   @override
   Future<void> initService() async {
-    Firestore.initialize(_projectId);
+    String? projectId = AppConfig.instance?.projectId;
+    if (projectId == null || projectId.isEmpty) return;
+    Firestore.initialize(projectId);
   }
 
   @override
@@ -71,14 +74,13 @@ class FirestoreService extends LogiService implements StorageBehavior {
   }
 
   @override
-  void onListenCollection({
+  StreamSubscription onListenCollection({
     required String path,
     required void Function(List<Map<String, dynamic>>) onData,
   }) {
     CollectionReference collectionReference =
         Firestore.instance.collection(path);
-
-    collectionReference.stream.listen((event) {
+    return collectionReference.stream.listen((event) {
       List<Document> documents = event.toList();
       List<Map<String, dynamic>> listJsonData = documents.map((e) {
         Map<String, dynamic> json = e.map;

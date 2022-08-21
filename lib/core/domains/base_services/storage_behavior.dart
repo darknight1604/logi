@@ -1,3 +1,5 @@
+import 'dart:async';
+
 abstract class StorageBehavior {
   Future<dynamic> add({
     required String path,
@@ -9,7 +11,7 @@ abstract class StorageBehavior {
     required String path,
     required String id,
   });
-  void onListenCollection({
+  StreamSubscription onListenCollection({
     required String path,
     required void Function(List<Map<String, dynamic>>) onData,
   });

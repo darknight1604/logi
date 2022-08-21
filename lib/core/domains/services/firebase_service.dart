@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:logi/core/constants/collection_constant.dart';
@@ -58,11 +60,11 @@ class FirebaseService extends LogiService implements StorageBehavior {
   }
 
   @override
-  void onListenCollection({
+  StreamSubscription onListenCollection({
     required String path,
     required void Function(List<Map<String, dynamic>>) onData,
   }) {
-    db.collection(path).snapshots().listen((event) {
+    return db.collection(path).snapshots().listen((event) {
       List<Map<String, dynamic>> listJsonData = event.docs.map((e) {
         Map<String, dynamic> jsonData = e.data();
         jsonData['id'] = e.id;
