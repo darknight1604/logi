@@ -1,0 +1,10 @@
+{
+    "common":{
+        "nickName": "Biệt danh",
+        "submit": "Xác nhận",
+        "homeScreen": "Trang chủ",
+        "exit": "Thoát",
+        "saySomething": "Hãy nói điều gì đó",
+        "comingSoon": "Công trình đang thi công"
+    }
+}
