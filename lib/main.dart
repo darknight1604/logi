@@ -1,24 +1,24 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:logi/core/applications/authorization/authorization_bloc.dart';
+import 'package:logi/core/base_services/logi_run_zoned.dart';
 import 'package:logi/core/constants/logi_constant.dart';
-import 'package:logi/core/domains/base_services/logi_run_zoned.dart';
-import 'package:logi/core/domains/factories/logi_bloc_observer_factory.dart';
-import 'package:logi/core/domains/factories/logi_run_zoned_factory.dart';
+import 'package:logi/core/factories/logi_bloc_observer_factory.dart';
+import 'package:logi/core/factories/logi_run_zoned_factory.dart';
 import 'package:logi/core/helpers/app_config.dart';
 import 'package:logi/core/helpers/config_reader.dart';
 import 'package:logi/core/helpers/logi_route.dart';
-import 'package:logi/core/infastructures/repositories/firebase_repository.dart';
-import 'package:logi/core/infastructures/repositories/user_repository.dart';
-import 'package:logi/screens/home_screen/repository/chat_repository.dart';
+import 'package:logi/core/services/logi_service.dart';
+import 'package:logi/features/authentication/applications/authorization/authorization_bloc.dart';
+import 'package:logi/features/authentication/repositories/user_repository.dart';
+import 'package:logi/features/home/repository/chat_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Load json config
   final configData = await ConfigReader.getConfigJson();
   AppConfig(configData);
-  await FirebaseRepository.initialFirebase();
+  await LogiService.initialFirebase();
   await EasyLocalization.ensureInitialized();
 
   // Add bloc Observer
@@ -58,30 +58,27 @@ class LogiApp extends StatelessWidget {
           create: (_) => ChatRepository(),
         ),
       ],
-      child: Builder(
-        builder: (context) {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider<AuthorizationBloc>(
-                create: (_) => AuthorizationBloc(
-                  RepositoryProvider.of<UserRepository>(context)
-                ),
-              ),
-            ],
-            child: MaterialApp(
-              title: LogiConstant.appName,
-              theme: ThemeData(
-                scaffoldBackgroundColor: Colors.white,
-              ),
-              localizationsDelegates: context.localizationDelegates,
-              supportedLocales: context.supportedLocales,
-              locale: context.locale,
-              initialRoute: LogiRoute.welcomeScreen,
-              onGenerateRoute: LogiRoute.onGenerateRoute,
+      child: Builder(builder: (context) {
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider<AuthorizationBloc>(
+              create: (_) => AuthorizationBloc(
+                  RepositoryProvider.of<UserRepository>(context)),
             ),
-          );
-        }
-      ),
+          ],
+          child: MaterialApp(
+            title: LogiConstant.appName,
+            theme: ThemeData(
+              scaffoldBackgroundColor: Colors.white,
+            ),
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            initialRoute: LogiRoute.welcomeScreen,
+            onGenerateRoute: LogiRoute.onGenerateRoute,
+          ),
+        );
+      }),
     );
   }
 }
