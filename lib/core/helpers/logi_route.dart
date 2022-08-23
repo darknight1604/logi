@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:logi/core/applications/authorization/authorization_bloc.dart';
-import 'package:logi/screens/home_screen/presentations/home_screen.dart';
-import 'package:logi/screens/not_found/presentations/not_found_screen.dart';
-import 'package:logi/screens/welcome_screen/presentations/welcome_screen.dart';
+import 'package:logi/features/authentication/applications/authorization/authorization_bloc.dart';
+import 'package:logi/features/authentication/presentations/welcome_screen/welcome_screen.dart';
+import 'package:logi/features/home/presentations/home_screen.dart';
+import 'package:logi/features/not_found/presentations/not_found_screen.dart';
 
 class LogiRoute {
   static const String welcomeScreen = '/welcomeScreen';
