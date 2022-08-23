@@ -13,6 +13,7 @@ class UserRepository {
     await storageBehavior
         .add(path: path, jsonData: User(nickname: nickname).toJson())
         .then((value) {
+      if (value == null) return null;
       user = User.fromJson(value);
     });
     return user;
