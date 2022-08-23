@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logi/core/domains/models/user.dart';
+import 'package:logi/core/helpers/log.dart';
 import 'package:logi/core/infastructures/repositories/user_repository.dart';
 
 part 'welcome_event.dart';
@@ -23,6 +24,7 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
       emit(WelcomeCreateUserSuccess(user));
       add(GetListUserEvent());
     } catch (e) {
+      Log.error('_onCreateUserEvent', e.toString());
       emit(WelcomeRequestFailure());
     }
   }
