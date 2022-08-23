@@ -50,6 +50,8 @@ pubspec.lock
 
 macos/Flutter/GeneratedPluginRegistrant.swift
 
+macos/GoogleService-Info.plist
+
 lib/firebase_options.dart
 
 /macos/Podfile.lock

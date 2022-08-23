@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:logi/core/constants/collection_constant.dart';
 import 'package:logi/core/domains/base_services/logi_service.dart';
 import 'package:logi/core/domains/base_services/storage_behavior.dart';
 import 'package:logi/firebase_options.dart';
@@ -37,21 +36,21 @@ class FirebaseService extends LogiService implements StorageBehavior {
   }
 
   @override
-  Future<bool> add({
+  Future<dynamic> add({
     required String path,
     required Map<String, dynamic> jsonData,
   }) async {
-    bool result = false;
-    await db.collection(path).add(jsonData).then((value) {
-      result = true;
-    });
+    dynamic result;
+    final documentSnapshot = await db.collection(path).add(jsonData);
+    result = jsonData;
+    result['id'] = documentSnapshot.id;
     return result;
   }
 
   @override
   Future<List<Map<String, dynamic>>> get({required String path}) async {
     List<Map<String, dynamic>> results = [];
-    await db.collection(CollectionConstant.fruits).get().then((event) {
+    await db.collection(path).get().then((event) {
       for (var doc in event.docs) {
         results.add(doc.data());
       }
