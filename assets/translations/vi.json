@@ -5,6 +5,12 @@
         "homeScreen": "Trang chủ",
         "exit": "Thoát",
         "saySomething": "Hãy nói điều gì đó",
-        "comingSoon": "Công trình đang thi công"
+        "comingSoon": "Công trình đang thi công",
+        "gameMenu": "Danh sách game",
+        "unknown": "Không xác định"
+    },
+    "game": {
+        "caro": "Caro",
+        "threeCard": "Bài cào"
     }
 }
