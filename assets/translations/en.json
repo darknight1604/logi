@@ -12,5 +12,8 @@
     "game": {
         "caro": "Caro",
         "threeCard": "ThreeCard"
+    },
+    "errorMessage": {
+        "notFound": "404"
     }
 }
