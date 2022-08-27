@@ -61,3 +61,7 @@ lib/gen
 assets/configs/config.json
 
 .vscode
+
+*.freezed.dart
+
+*.g.dart
