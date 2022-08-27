@@ -7,7 +7,8 @@
         "saySomething": "Hãy nói điều gì đó",
         "comingSoon": "Công trình đang thi công",
         "gameMenu": "Danh sách game",
-        "unknown": "Không xác định"
+        "unknown": "Không xác định",
+        "back": "Quay lại"
     },
     "game": {
         "caro": "Caro",
@@ -15,5 +16,8 @@
     },
     "errorMessage": {
         "notFound": "404"
+    },
+    "roomListingScreen":{
+        "title": "Danh sách phòng"
     }
 }

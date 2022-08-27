@@ -7,7 +7,8 @@
         "saySomething": "Say something",
         "comingSoon": "Something is coming soon",
         "gameMenu": "Game menu",
-        "unknown": "Unknow"
+        "unknown": "Unknow",
+        "back": "Back"
     },
     "game": {
         "caro": "Caro",
@@ -15,5 +16,8 @@
     },
     "errorMessage": {
         "notFound": "404"
+    },
+    "roomListingScreen":{
+        "title": "List room"
     }
 }
