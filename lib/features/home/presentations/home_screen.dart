@@ -7,7 +7,7 @@ import 'package:logi/core/components/sized_box_widget.dart';
 import 'package:logi/core/components/text_field_widget.dart';
 import 'package:logi/core/helpers/log.dart';
 import 'package:logi/core/helpers/logi_route.dart';
-import 'package:logi/core/helpers/text_style_manager.dart';
+import 'package:logi/core/helpers/style_manager.dart';
 import 'package:logi/features/authentication/applications/authorization/authorization_bloc.dart';
 import 'package:logi/features/authentication/domains/models/user.dart';
 import 'package:logi/features/home/applications/chat_message/chat_message_bloc.dart';
@@ -15,7 +15,7 @@ import 'package:logi/features/home/applications/chat_scroll_button/chat_scroll_b
 import 'package:logi/features/home/applications/game_menu/game_menu_cubit.dart';
 import 'package:logi/features/home/domains/models/game.dart';
 import 'package:logi/features/home/domains/models/message.dart';
-import 'package:logi/features/home/repository/chat_repository.dart';
+import 'package:logi/features/home/repositories/chat_repository.dart';
 import 'package:logi/gen/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:logi/features/home/domains/enums/game_enum.dart';
@@ -34,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     focusNode = FocusNode();
+    focusNode.requestFocus();
   }
 
   @override
@@ -413,25 +414,34 @@ class _GameMenuGroupWidget extends StatelessWidget {
             separatorBuilder: (_, __) => SizedBoxWidget.h10,
             itemBuilder: (context, index) {
               Game game = state.listGame[index];
-              return RichText(
-                text: TextSpan(children: [
-                  TextSpan(
-                    text: '${index.toString()}. ',
-                    style: TextStyleManager.largeText.copyWith(
-                      color: isSelectedGame(state, index)
-                          ? Colors.blue
-                          : Colors.black,
+              return GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    LogiRoute.roomListingScreen,
+                    arguments: game.gameEnum,
+                  );
+                },
+                child: RichText(
+                  text: TextSpan(children: [
+                    TextSpan(
+                      text: '${index.toString()}. ',
+                      style: TextStyleManager.largeText.copyWith(
+                        color: isSelectedGame(state, index)
+                            ? Colors.blue
+                            : Colors.black,
+                      ),
                     ),
-                  ),
-                  TextSpan(
-                    text: game.gameEnum?.getTitle() ?? '',
-                    style: TextStyleManager.largeText.copyWith(
-                      color: isSelectedGame(state, index)
-                          ? Colors.blue
-                          : Colors.black,
+                    TextSpan(
+                      text: game.gameEnum?.getTitle() ?? '',
+                      style: TextStyleManager.largeText.copyWith(
+                        color: isSelectedGame(state, index)
+                            ? Colors.blue
+                            : Colors.black,
+                      ),
                     ),
-                  ),
-                ]),
+                  ]),
+                ),
               );
             },
           );

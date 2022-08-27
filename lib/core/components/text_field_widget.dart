@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:logi/core/helpers/text_style_manager.dart';
+import 'package:logi/core/helpers/style_manager.dart';
 
 class TextFieldWidget extends StatelessWidget {
   final String? hintText;

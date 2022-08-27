@@ -2,13 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logi/features/authentication/applications/authorization/authorization_bloc.dart';
 import 'package:logi/features/authentication/presentations/welcome_screen/welcome_screen.dart';
+import 'package:logi/features/caro/presentations/caro_screen.dart';
+import 'package:logi/features/home/domains/enums/game_enum.dart';
 import 'package:logi/features/home/presentations/home_screen.dart';
 import 'package:logi/features/not_found/presentations/not_found_screen.dart';
+import 'package:logi/features/room/presentations/room_listing_screen.dart';
 
 class LogiRoute {
   static const String welcomeScreen = '/welcomeScreen';
 
   static const String homeScreen = '/homeScreen';
+
+  static const String roomListingScreen = '/roomListingScreen';
+
+  static const String caroScreen = '/caroScreen';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -28,6 +35,21 @@ class LogiRoute {
         return MaterialPageRoute(
           builder: (context) {
             return const HomeScreen();
+          },
+        );
+      case roomListingScreen:
+        GameEnum gameEnum = settings.arguments as GameEnum;
+        return MaterialPageRoute(
+          builder: (context) {
+            return RoomListingScreen(
+              gameEnum: gameEnum,
+            );
+          },
+        );
+      case caroScreen:
+        return MaterialPageRoute(
+          builder: (context) {
+            return const CaroScreen();
           },
         );
       default:

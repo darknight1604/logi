@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logi/core/components/sized_box_widget.dart';
 import 'package:logi/core/components/text_field_widget.dart';
 import 'package:logi/core/helpers/logi_route.dart';
-import 'package:logi/core/helpers/text_style_manager.dart';
+import 'package:logi/core/helpers/style_manager.dart';
 import 'package:logi/features/authentication/applications/authorization/authorization_bloc.dart';
 import 'package:logi/features/authentication/applications/user/user_bloc.dart';
 import 'package:logi/gen/locale_keys.g.dart';
