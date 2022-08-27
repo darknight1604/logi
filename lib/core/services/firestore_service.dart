@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firedart/firedart.dart';
+import 'package:logi/core/base_services/base_query.dart';
 import 'package:logi/core/base_services/logi_base_service.dart';
 import 'package:logi/core/base_services/storage_behavior.dart';
 import 'package:logi/core/helpers/app_config.dart';
@@ -89,5 +90,17 @@ class FirestoreService extends LogiBaseService implements StorageBehavior {
       }).toList();
       onData(listJsonData);
     });
+  }
+
+  @override
+  Future<bool> deleteWhere({required String path, required List<BaseQuery> listQuery}) {
+    // TODO: implement deleteWhere
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> where({required String path, required String field, isEqualTo}) {
+    // TODO: implement where
+    throw UnimplementedError();
   }
 }
