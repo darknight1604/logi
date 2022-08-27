@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:logi/features/home/domains/enums/game_enum.dart';
+import 'package:logi/core/helpers/game_manager.dart';
 import 'package:logi/features/home/domains/models/game.dart';
 
 part 'game_menu_state.dart';
@@ -8,7 +8,7 @@ part 'game_menu_state.dart';
 class GameMenuCubit extends Cubit<GameMenuState> {
   GameMenuCubit()
       : super(GameMenuInitialState(
-          listGame: _GameManager.listGameAvailable(),
+          listGame: GameManager.listGameAvailable(),
           indexGameInit: 0,
         ));
 
@@ -38,18 +38,5 @@ class GameMenuCubit extends Cubit<GameMenuState> {
       );
       return;
     }
-  }
-}
-
-class _GameManager {
-  static List<Game> listGameAvailable() {
-    return const [
-      Game(
-        gameEnum: GameEnum.caro,
-      ),
-      Game(
-        gameEnum: GameEnum.threeCard,
-      )
-    ];
   }
 }

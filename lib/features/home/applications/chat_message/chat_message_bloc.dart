@@ -6,7 +6,7 @@ import 'package:logi/core/helpers/log.dart';
 import 'package:logi/features/authentication/applications/authorization/authorization_bloc.dart';
 import 'package:logi/features/authentication/domains/models/user.dart';
 import 'package:logi/features/home/domains/models/message.dart';
-import 'package:logi/features/home/repository/chat_repository.dart';
+import 'package:logi/features/home/repositories/chat_repository.dart';
 
 part 'chat_message_event.dart';
 part 'chat_message_state.dart';

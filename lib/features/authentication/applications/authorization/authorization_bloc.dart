@@ -38,4 +38,12 @@ class AuthorizationBloc
     userRepository.deleteUser(currentState.user?.id ?? '');
     emit(const UserAuthorizedState(null));
   }
+
+  User? getUser() {
+    if (state is! UserAuthorizedState) return null;
+    final currentState = state as UserAuthorizedState;
+    if (!currentState.isAuthorized) return null;
+
+    return currentState.user!;
+  }
 }
