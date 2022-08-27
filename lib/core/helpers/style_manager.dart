@@ -18,3 +18,14 @@ class TextStyleManager {
     color: Colors.black,
   );
 }
+
+class ButtonStyleManager {
+  static ButtonStyle common = ButtonStyle(
+    backgroundColor: MaterialStateProperty.all<Color>(
+      Colors.white,
+    ),
+    side: MaterialStateProperty.all<BorderSide>(
+      const BorderSide(color: Colors.grey),
+    ),
+  );
+}
