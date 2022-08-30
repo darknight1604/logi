@@ -8,7 +8,9 @@
         "comingSoon": "Something is coming soon",
         "gameMenu": "Game menu",
         "unknown": "Unknow",
-        "back": "Back"
+        "back": "Back",
+        "congratulation": "Congratulation",
+        "confirmDialog": "Confirm dialog"
     },
     "game": {
         "caro": "Caro",
@@ -17,7 +19,14 @@
     "errorMessage": {
         "notFound": "404"
     },
-    "roomListingScreen":{
+    "roomListingScreen": {
         "title": "List room"
+    },
+    "caroScreen": {
+        "title": "Caro game",
+        "yourColor": "Your color",
+        "opponentColor": "Opponent color",
+        "host": "Host",
+        "winnerDescription": "Winner is"
     }
 }
