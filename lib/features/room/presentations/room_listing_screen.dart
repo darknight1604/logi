@@ -129,7 +129,7 @@ class _RoomListingScreenState extends State<RoomListingScreen> {
             ),
           ),
           const PaddingWrapper(
-            child: _BottomActionGroupWidget(),
+            child: BottomActionGroupWidget(),
           ),
         ],
       ),
@@ -148,6 +148,11 @@ class _RoomListingScreenState extends State<RoomListingScreen> {
     await Navigator.pushNamed(
       buildContext,
       LogiRoute.caroScreen,
+      arguments: {
+        'userId': user.id,
+        'roomId': room.id,
+        'nickname': user.nickname,
+      },
     ).then(
       (value) {
         BlocProvider.of<RoomBloc>(buildContext).add(
@@ -161,8 +166,12 @@ class _RoomListingScreenState extends State<RoomListingScreen> {
   }
 }
 
-class _BottomActionGroupWidget extends StatelessWidget {
-  const _BottomActionGroupWidget({Key? key}) : super(key: key);
+class BottomActionGroupWidget extends StatelessWidget {
+  final Function()? onPop;
+  const BottomActionGroupWidget({
+    Key? key,
+    this.onPop,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -174,7 +183,7 @@ class _BottomActionGroupWidget extends StatelessWidget {
           ElevatedButton(
             style: ButtonStyleManager.common,
             onPressed: () {
-              Navigator.pop(context);
+              onPop?.call() ?? Navigator.pop(context);
             },
             child: Text(
               LocaleKeys.commonBack.tr(),
