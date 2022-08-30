@@ -8,4 +8,6 @@ class CollectionConstant {
   
   static const String rooms = 'rooms';
   static const String roomUsers = 'room_users';
+
+  static const String caroSteps = 'caro_steps';
 }
