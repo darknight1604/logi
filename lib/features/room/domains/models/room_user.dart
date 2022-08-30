@@ -14,6 +14,7 @@ class RoomUser with _$RoomUser {
     String? roomId,
     String? userId,
     String? nickName,
+    int? joinDate,
   }) = _RoomUser;
 
   factory RoomUser.fromJson(Map<String, Object?> json) =>

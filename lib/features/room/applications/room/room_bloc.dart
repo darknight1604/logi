@@ -77,6 +77,7 @@ class RoomBloc extends Bloc<RoomEvent, RoomState> {
       nickName: event.user.nickname,
       roomId: event.room.id,
       userId: event.user.id,
+      joinDate: DateTime.now().millisecondsSinceEpoch,
     );
     await roomRepository.joinRoom(roomUser);
   }

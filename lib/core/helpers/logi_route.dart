@@ -47,9 +47,17 @@ class LogiRoute {
           },
         );
       case caroScreen:
+        Map mapData = settings.arguments as Map;
+        String roomId = mapData['roomId'];
+        String userId = mapData['userId'];
+        String nickname = mapData['nickname'];
         return MaterialPageRoute(
           builder: (context) {
-            return const CaroScreen();
+            return CaroScreen(
+              roomId: roomId,
+              userId: userId,
+              nickname: nickname,
+            );
           },
         );
       default:
