@@ -5,6 +5,7 @@ import 'package:logi/core/base_services/base_query.dart';
 import 'package:logi/core/base_services/logi_base_service.dart';
 import 'package:logi/core/base_services/storage_behavior.dart';
 import 'package:logi/core/helpers/app_config.dart';
+import 'package:logi/core/services/queries/query_equal_to.dart';
 
 class FirestoreService extends LogiBaseService implements StorageBehavior {
   static final FirestoreService _instance = FirestoreService._internal();
@@ -93,14 +94,68 @@ class FirestoreService extends LogiBaseService implements StorageBehavior {
   }
 
   @override
-  Future<bool> deleteWhere({required String path, required List<BaseQuery> listQuery}) {
-    // TODO: implement deleteWhere
-    throw UnimplementedError();
+  Future<bool> deleteWhere({
+    required String path,
+    required List<BaseQuery> listQuery,
+  }) async {
+    CollectionReference collectionReference =
+        Firestore.instance.collection(path);
+
+    int i = 0;
+    QueryReference? newCollectionRef;
+    while (i < listQuery.length) {
+      BaseQuery query = listQuery[i];
+      newCollectionRef = _addQuery(
+        queryRef: collectionReference,
+        field: query.field,
+        query: query,
+      );
+      i++;
+    }
+    if (newCollectionRef == null) return false;
+    await newCollectionRef.get().then((event) async {
+      for (var doc in event.toList()) {
+        String id = doc.id;
+        await delete(path: path, id: id);
+      }
+    });
+    return true;
   }
 
   @override
-  Future<List<Map<String, dynamic>>> where({required String path, required String field, isEqualTo}) {
-    // TODO: implement where
-    throw UnimplementedError();
+  Future<List<Map<String, dynamic>>> where({
+    required String path,
+    required String field,
+    isEqualTo,
+  }) async {
+    CollectionReference collectionReference =
+        Firestore.instance.collection(path);
+    final collection = await collectionReference
+        .where(
+          field,
+          isEqualTo: isEqualTo,
+        )
+        .get();
+    List<Document> documents = collection.toList();
+    return documents.map((e) {
+      Map<String, dynamic> json = e.map;
+      json['id'] = e.id;
+      return json;
+    }).toList(growable: false);
+  }
+
+  QueryReference? _addQuery({
+    required CollectionReference queryRef,
+    required String field,
+    required BaseQuery query,
+  }) {
+    switch (query.runtimeType) {
+      case QueryEqualTo:
+        return queryRef.where(
+          field,
+          isEqualTo: (query as QueryEqualTo).isEqualTo,
+        );
+    }
+    return null;
   }
 }
