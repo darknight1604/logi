@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logi/core/components/circle_button_widget.dart';
+import 'package:logi/core/components/divider_widget.dart';
 import 'package:logi/core/components/sized_box_widget.dart';
 import 'package:logi/core/components/text_field_widget.dart';
 import 'package:logi/core/helpers/log.dart';
 import 'package:logi/core/helpers/logi_route.dart';
-import 'package:logi/core/helpers/text_style_manager.dart';
+import 'package:logi/core/helpers/style_manager.dart';
 import 'package:logi/features/authentication/applications/authorization/authorization_bloc.dart';
 import 'package:logi/features/authentication/domains/models/user.dart';
 import 'package:logi/features/home/applications/chat_message/chat_message_bloc.dart';
 import 'package:logi/features/home/applications/chat_scroll_button/chat_scroll_button_cubit.dart';
+import 'package:logi/features/home/applications/game_menu/game_menu_cubit.dart';
+import 'package:logi/features/home/domains/models/game.dart';
 import 'package:logi/features/home/domains/models/message.dart';
-import 'package:logi/features/home/repository/chat_repository.dart';
+import 'package:logi/features/home/repositories/chat_repository.dart';
 import 'package:logi/gen/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:logi/features/home/domains/enums/game_enum.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -23,13 +28,35 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late FocusNode focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    focusNode = FocusNode();
+    focusNode.requestFocus();
+  }
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ChatMessageBloc(
-        chatRepository: RepositoryProvider.of<ChatRepository>(context),
-        authorizationBloc: BlocProvider.of<AuthorizationBloc>(context),
-      )..add(GetCountMessageEvent()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => ChatMessageBloc(
+            chatRepository: RepositoryProvider.of<ChatRepository>(context),
+            authorizationBloc: BlocProvider.of<AuthorizationBloc>(context),
+          )..add(GetCountMessageEvent()),
+        ),
+        BlocProvider<GameMenuCubit>(
+          create: (context) => GameMenuCubit(),
+        ),
+      ],
       child: Scaffold(
         body: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -45,19 +72,27 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
+              SizedBoxWidget.h10,
               Expanded(
                 child: Row(
                   children: [
                     Expanded(
-                      child: Center(
-                        child: Text(
-                          LocaleKeys.commonComingSoon.tr(),
-                          style: TextStyleManager.extraLargeText.copyWith(
-                            fontStyle: FontStyle.italic,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            LocaleKeys.commonGameMenu.tr(),
                           ),
-                        ),
+                          const DividerWidget(),
+                          Expanded(
+                            child: _GameMenuGroupWidget(
+                              focusNode: focusNode,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
+                    SizedBoxWidget.w20,
                     BlocProvider<ChatScrollButtonCubit>(
                       create: (_) => ChatScrollButtonCubit(),
                       child: const _ChatGroupWidget(),
@@ -348,5 +383,77 @@ class _ChatMessageItemWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _GameMenuGroupWidget extends StatelessWidget {
+  final FocusNode focusNode;
+  const _GameMenuGroupWidget({
+    Key? key,
+    required this.focusNode,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return RawKeyboardListener(
+      focusNode: focusNode,
+      onKey: (event) {
+        if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
+          BlocProvider.of<GameMenuCubit>(context).down();
+          return;
+        }
+        if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
+          BlocProvider.of<GameMenuCubit>(context).up();
+          return;
+        }
+      },
+      child: BlocBuilder<GameMenuCubit, GameMenuState>(
+        builder: (context, state) {
+          return ListView.separated(
+            itemCount: state.listGame.length,
+            separatorBuilder: (_, __) => SizedBoxWidget.h10,
+            itemBuilder: (context, index) {
+              Game game = state.listGame[index];
+              return GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    LogiRoute.roomListingScreen,
+                    arguments: game.gameEnum,
+                  );
+                },
+                child: RichText(
+                  text: TextSpan(children: [
+                    TextSpan(
+                      text: '${index.toString()}. ',
+                      style: TextStyleManager.largeText.copyWith(
+                        color: isSelectedGame(state, index)
+                            ? Colors.blue
+                            : Colors.black,
+                      ),
+                    ),
+                    TextSpan(
+                      text: game.gameEnum?.getTitle() ?? '',
+                      style: TextStyleManager.largeText.copyWith(
+                        color: isSelectedGame(state, index)
+                            ? Colors.blue
+                            : Colors.black,
+                      ),
+                    ),
+                  ]),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  bool isSelectedGame(final GameMenuState gameMenuState, int index) {
+    if (gameMenuState is! GameMenuInitialState) {
+      return false;
+    }
+    return gameMenuState.indexGameInit == index;
   }
 }

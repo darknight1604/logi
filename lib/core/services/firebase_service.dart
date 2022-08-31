@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:logi/core/base_services/base_query.dart';
 import 'package:logi/core/base_services/logi_base_service.dart';
 import 'package:logi/core/base_services/storage_behavior.dart';
+import 'package:logi/core/services/queries/query_equal_to.dart';
+import 'package:logi/core/services/queries/query_not_equal_to.dart';
 import 'package:logi/firebase_options.dart';
 
 class FirebaseService extends LogiBaseService implements StorageBehavior {
@@ -72,5 +75,76 @@ class FirebaseService extends LogiBaseService implements StorageBehavior {
 
       onData(listJsonData);
     });
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> where({
+    required String path,
+    required String field,
+    isEqualTo,
+  }) async {
+    List<Map<String, dynamic>> results = [];
+    await db
+        .collection(path)
+        .where(field, isEqualTo: isEqualTo)
+        .get()
+        .then((event) {
+      for (var doc in event.docs) {
+        Map<String, dynamic> mapData = doc.data();
+        mapData['id'] = doc.id;
+        results.add(mapData);
+      }
+    });
+    return results;
+  }
+
+  @override
+  Future<bool> deleteWhere({
+    required String path,
+    required List<BaseQuery> listQuery,
+  }) async {
+    if (listQuery.isEmpty) return false;
+    CollectionReference collectionRef = db.collection(path);
+
+    int i = 0;
+    Query newCollectionRef = collectionRef;
+    while (i < listQuery.length) {
+      BaseQuery query = listQuery[i];
+      newCollectionRef = _addQuery(
+        collectionRef: newCollectionRef,
+        field: query.field,
+        query: query,
+      );
+      i++;
+    }
+    newCollectionRef.get().then((event) async {
+      for (var doc in event.docs) {
+        String id = doc.id;
+        await delete(path: path, id: id);
+      }
+    });
+
+    return true;
+  }
+
+  Query _addQuery({
+    required Query collectionRef,
+    required String field,
+    required BaseQuery query,
+  }) {
+    switch (query.runtimeType) {
+      case QueryEqualTo:
+        return collectionRef.where(
+          field,
+          isEqualTo: (query as QueryEqualTo).isEqualTo,
+        );
+      case QueryNotEqualTo:
+        return collectionRef.where(
+          field,
+          isNotEqualTo: (query as QueryNotEqualTo).isNotEqualTo,
+        );
+      default:
+    }
+    return collectionRef;
   }
 }

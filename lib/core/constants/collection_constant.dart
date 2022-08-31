@@ -5,4 +5,9 @@ class CollectionConstant {
   static const String prod = 'prod';
   static const String users = 'users';
   static const String globalConversations = 'global_conversations';
+  
+  static const String rooms = 'rooms';
+  static const String roomUsers = 'room_users';
+
+  static const String caroSteps = 'caro_steps';
 }

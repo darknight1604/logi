@@ -9,9 +9,6 @@ import 'package:logi/core/helpers/app_config.dart';
 import 'package:logi/core/helpers/config_reader.dart';
 import 'package:logi/core/helpers/logi_route.dart';
 import 'package:logi/core/services/logi_service.dart';
-import 'package:logi/features/authentication/applications/authorization/authorization_bloc.dart';
-import 'package:logi/features/authentication/repositories/user_repository.dart';
-import 'package:logi/features/home/repository/chat_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,22 +47,10 @@ class LogiApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider<UserRepository>(
-          create: (_) => UserRepository(),
-        ),
-        RepositoryProvider<ChatRepository>(
-          create: (_) => ChatRepository(),
-        ),
-      ],
+      providers: LogiService.initialRepoProvider(),
       child: Builder(builder: (context) {
         return MultiBlocProvider(
-          providers: [
-            BlocProvider<AuthorizationBloc>(
-              create: (_) => AuthorizationBloc(
-                  RepositoryProvider.of<UserRepository>(context)),
-            ),
-          ],
+          providers: LogiService.initialBlocProvider(context),
           child: MaterialApp(
             title: LogiConstant.appName,
             theme: ThemeData(

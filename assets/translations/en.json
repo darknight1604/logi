@@ -1,10 +1,32 @@
 {
-    "common":{
+    "common": {
         "nickName": "Nickname",
         "submit": "Submit",
         "homeScreen": "Home screen",
         "exit": "Exit",
         "saySomething": "Say something",
-        "comingSoon": "Something is coming soon"
+        "comingSoon": "Something is coming soon",
+        "gameMenu": "Game menu",
+        "unknown": "Unknow",
+        "back": "Back",
+        "congratulation": "Congratulation",
+        "confirmDialog": "Confirm dialog"
+    },
+    "game": {
+        "caro": "Caro",
+        "threeCard": "ThreeCard"
+    },
+    "errorMessage": {
+        "notFound": "404"
+    },
+    "roomListingScreen": {
+        "title": "List room"
+    },
+    "caroScreen": {
+        "title": "Caro game",
+        "yourColor": "Your color",
+        "opponentColor": "Opponent color",
+        "host": "Host",
+        "winnerDescription": "Winner is"
     }
 }

@@ -1,10 +1,32 @@
 {
-    "common":{
+    "common": {
         "nickName": "Biệt danh",
         "submit": "Xác nhận",
         "homeScreen": "Trang chủ",
         "exit": "Thoát",
         "saySomething": "Hãy nói điều gì đó",
-        "comingSoon": "Công trình đang thi công"
+        "comingSoon": "Công trình đang thi công",
+        "gameMenu": "Danh sách game",
+        "unknown": "Không xác định",
+        "back": "Quay lại",
+        "congratulation": "Chúc mừng",
+        "confirmDialog": "Thông báo"
+    },
+    "game": {
+        "caro": "Caro",
+        "threeCard": "Bài cào"
+    },
+    "errorMessage": {
+        "notFound": "404"
+    },
+    "roomListingScreen": {
+        "title": "Danh sách phòng"
+    },
+    "caroScreen": {
+        "title": "Caro game",
+        "yourColor": "Màu của bạn",
+        "opponentColor": "Màu của đối phương",
+        "host": "Chủ phòng",
+        "winnerDescription": "Người thắng cuộc là"
     }
 }
