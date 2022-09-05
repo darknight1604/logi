@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:logi/core/base_services/base_query.dart';
+import 'package:logi/core/services/queries/order_by.dart';
 
 abstract class StorageBehavior {
   Future<dynamic> add({
@@ -14,6 +15,7 @@ abstract class StorageBehavior {
     required String path,
     required String field,
     dynamic isEqualTo,
+    List<OrderBy>? listOrderBy,
   });
   Future<bool> delete({
     required String path,

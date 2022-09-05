@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:logi/core/base_services/base_query.dart';
 import 'package:logi/core/base_services/logi_base_service.dart';
 import 'package:logi/core/base_services/storage_behavior.dart';
+import 'package:logi/core/services/queries/order_by.dart';
 import 'package:logi/core/services/queries/query_equal_to.dart';
 import 'package:logi/core/services/queries/query_not_equal_to.dart';
 import 'package:logi/firebase_options.dart';
@@ -82,20 +83,48 @@ class FirebaseService extends LogiBaseService implements StorageBehavior {
     required String path,
     required String field,
     isEqualTo,
+    List<OrderBy>? listOrderBy,
   }) async {
-    List<Map<String, dynamic>> results = [];
-    await db
-        .collection(path)
-        .where(field, isEqualTo: isEqualTo)
-        .get()
-        .then((event) {
-      for (var doc in event.docs) {
-        Map<String, dynamic> mapData = doc.data();
-        mapData['id'] = doc.id;
-        results.add(mapData);
+    Query<Map<String, dynamic>> query = db.collection(path).where(
+          field,
+          isEqualTo: isEqualTo,
+        );
+    if (listOrderBy != null && listOrderBy.isNotEmpty) {
+      int i = 0;
+      while (i < listOrderBy.length) {
+        OrderBy orderBy = listOrderBy[i];
+        query = _addOrder(
+          collectionRef: query,
+          orderBy: orderBy,
+        );
+        i++;
       }
-    });
-    return results;
+    }
+    QuerySnapshot<Map<String, dynamic>> response = await query.get();
+    return response.docs.map((doc) {
+      Map<String, dynamic> mapData = doc.data();
+      mapData['id'] = doc.id;
+      return mapData;
+    }).toList();
+    //  .then((event) async {
+    //     for (var doc in event.docs) {
+    //       Map<String, dynamic> mapData = doc.data();
+    //       mapData['id'] = doc.id;
+    //       results.add(mapData);
+    //     }
+    //   });
+    // await db
+    //     .collection(path)
+    //     .where(field, isEqualTo: isEqualTo)
+    //     .get()
+    //     .then((event) {
+    //   for (var doc in event.docs) {
+    //     Map<String, dynamic> mapData = doc.data();
+    //     mapData['id'] = doc.id;
+    //     results.add(mapData);
+    //   }
+    // });
+    // return results;
   }
 
   @override
@@ -146,5 +175,15 @@ class FirebaseService extends LogiBaseService implements StorageBehavior {
       default:
     }
     return collectionRef;
+  }
+
+  Query<Map<String, dynamic>> _addOrder({
+    required Query<Map<String, dynamic>> collectionRef,
+    required OrderBy orderBy,
+  }) {
+    return collectionRef.orderBy(
+      orderBy.field,
+      descending: orderBy.descending,
+    );
   }
 }

@@ -74,6 +74,9 @@ class CaroBloc extends Bloc<CaroEvent, CaroState> {
         );
       }
     }
+
+    roomUsers = await roomRepository.getListRoomUser(roomId);
+    isHost = userId == roomUsers.first.userId;
     emit(
       ListPositionState(
         listPosition: listPosition,

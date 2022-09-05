@@ -4,6 +4,7 @@ import 'package:logi/core/base_services/base_query.dart';
 import 'package:logi/core/base_services/storage_behavior.dart';
 import 'package:logi/core/constants/collection_constant.dart';
 import 'package:logi/core/factories/storage_factory.dart';
+import 'package:logi/core/services/queries/order_by.dart';
 import 'package:logi/core/services/queries/query_equal_to.dart';
 import 'package:logi/features/home/domains/enums/game_enum.dart';
 import 'package:logi/features/room/domains/models/room.dart';
@@ -68,8 +69,14 @@ class RoomRepository {
         path: _pathRoomUsers,
         field: "roomId",
         isEqualTo: roomId,
+        listOrderBy: [
+          OrderBy(field: 'joinDate', descending: false),
+        ],
       );
     }
-    return jsonData.map((e) => RoomUser.fromJson(e)).toList();
+    List<RoomUser> roomUsers =
+        jsonData.map((e) => RoomUser.fromJson(e)).toList();
+
+    return roomUsers;
   }
 }

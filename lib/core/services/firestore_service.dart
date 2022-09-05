@@ -5,6 +5,7 @@ import 'package:logi/core/base_services/base_query.dart';
 import 'package:logi/core/base_services/logi_base_service.dart';
 import 'package:logi/core/base_services/storage_behavior.dart';
 import 'package:logi/core/helpers/app_config.dart';
+import 'package:logi/core/services/queries/order_by.dart';
 import 'package:logi/core/services/queries/query_equal_to.dart';
 
 class FirestoreService extends LogiBaseService implements StorageBehavior {
@@ -127,21 +128,46 @@ class FirestoreService extends LogiBaseService implements StorageBehavior {
     required String path,
     required String field,
     isEqualTo,
+    List<OrderBy>? listOrderBy,
   }) async {
     CollectionReference collectionReference =
         Firestore.instance.collection(path);
-    final collection = await collectionReference
-        .where(
-          field,
-          isEqualTo: isEqualTo,
-        )
-        .get();
-    List<Document> documents = collection.toList();
+    QueryReference collection = collectionReference.where(
+      field,
+      isEqualTo: isEqualTo,
+    );
+    if (listOrderBy != null && listOrderBy.isNotEmpty) {
+      int i = 0;
+      while (i < listOrderBy.length) {
+        OrderBy orderBy = listOrderBy[i];
+        collection = _addOrder(
+          collectionRef: collection,
+          orderBy: orderBy,
+        );
+        i++;
+      }
+    }
+
+    final listDocument = await collection.get();
+    List<Document> documents = listDocument.toList();
     return documents.map((e) {
       Map<String, dynamic> json = e.map;
       json['id'] = e.id;
       return json;
     }).toList(growable: false);
+
+    // final collection = await collectionReference
+    //     .where(
+    //       field,
+    //       isEqualTo: isEqualTo,
+    //     )
+    //     .get();
+    // List<Document> documents = collection.toList();
+    // return documents.map((e) {
+    //   Map<String, dynamic> json = e.map;
+    //   json['id'] = e.id;
+    //   return json;
+    // }).toList(growable: false);
   }
 
   QueryReference? _addQuery({
@@ -157,5 +183,15 @@ class FirestoreService extends LogiBaseService implements StorageBehavior {
         );
     }
     return null;
+  }
+
+  QueryReference _addOrder({
+    required QueryReference collectionRef,
+    required OrderBy orderBy,
+  }) {
+    return collectionRef.orderBy(
+      orderBy.field,
+      descending: orderBy.descending,
+    );
   }
 }
