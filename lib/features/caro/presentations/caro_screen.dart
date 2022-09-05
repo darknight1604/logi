@@ -1,8 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logi/core/components/padding_wrapper.dart';
 import 'package:logi/core/components/sized_box_widget.dart';
-import 'package:logi/core/components/winner_dialog.dart';
 import 'package:logi/core/helpers/style_manager.dart';
 import 'package:logi/features/caro/applications/caro/caro_bloc.dart';
 import 'package:logi/features/caro/domains/models/caro_position.dart';
@@ -10,7 +10,6 @@ import 'package:logi/features/caro/infrastructures/repositories/caro_repository.
 import 'package:logi/features/room/presentations/room_listing_screen.dart';
 import 'package:logi/features/room/repositories/room_repository.dart';
 import 'package:logi/gen/locale_keys.g.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class CaroScreen extends StatefulWidget {
   final String roomId;
@@ -173,14 +172,77 @@ class _CaroScreenState extends State<CaroScreen> {
   ) {
     showDialog(
       context: buildContext,
-      builder: (context) => WinnerDialog(
-        onConfirm: () {
-          caroBloc.add(ClearPositionEvent(roomId: widget.roomId));
-          Navigator.pop(context);
-        },
-        winnerNickname: winnerNickname,
+      builder: (context) => AlertDialog(
+        elevation: 24.0,
+        title: Text(
+          LocaleKeys.commonCongratulation.tr(),
+          style: TextStyleManager.largeText.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: LocaleKeys.caroScreenWinnerDescription.tr(),
+                style: TextStyleManager.normalText.copyWith(
+                  color: Colors.grey,
+                ),
+              ),
+              const TextSpan(text: ' '),
+              TextSpan(
+                text: winnerNickname,
+                style: TextStyleManager.normalText.copyWith(
+                  color: Colors.blue,
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              _quitGame.call(buildContext);
+            },
+            child: Text(
+              LocaleKeys.commonQuitGame.tr(),
+              style: TextStyleManager.normalText,
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _newGame.call(buildContext);
+            },
+            child: Text(
+              LocaleKeys.commonNewGame.tr(),
+              style: TextStyleManager.normalText,
+            ),
+          ),
+        ],
       ),
     );
+  }
+
+  void _newGame(final BuildContext buildContext) {
+    if (caroBloc.isHost) {
+      caroBloc.add(
+        ClearPositionEvent(
+          roomId: widget.roomId,
+        ),
+      );
+    }
+    Navigator.pop(buildContext);
+  }
+
+  void _quitGame(final BuildContext buildContext) {
+    if (caroBloc.isHost) {
+      caroBloc.add(
+        ClearPositionEvent(
+          roomId: widget.roomId,
+        ),
+      );
+    }
+    Navigator.popUntil(buildContext, (route) => route.isFirst);
   }
 }
 

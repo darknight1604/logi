@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:logi/core/helpers/log.dart';
 import 'package:logi/features/caro/domains/models/caro_position.dart';
 import 'package:logi/features/caro/infrastructures/repositories/caro_repository.dart';
 import 'package:logi/features/room/domains/models/room_user.dart';
@@ -104,7 +105,8 @@ class CaroBloc extends Bloc<CaroEvent, CaroState> {
 
     CaroPosition newPosition = event.position.copyWith(
       userId: event.userId,
-      nickname: event.nickname,
+      nickname:
+          isHost ? getHost()?.nickName ?? '' : getOpponent()?.nickName ?? '',
     );
     listPosition.removeAt(index);
     listPosition.insert(index, newPosition);
@@ -133,6 +135,9 @@ class CaroBloc extends Bloc<CaroEvent, CaroState> {
   }
 
   void _onListenCaroPosition(List<Map<String, dynamic>> listJsonData) async {
+    Log.info('listJsonData', listJsonData.toString());
+    if (listJsonData.isEmpty) return;
+    Log.info('currentState', state.toString());
     if (state is! ListPositionState) return;
     final currentState = (state as ListPositionState);
     List<CaroPosition> currentData = [...currentState.listPosition];
@@ -141,6 +146,7 @@ class CaroBloc extends Bloc<CaroEvent, CaroState> {
         listJsonData.map((e) => CaroPosition.fromJson(e)).toList();
 
     for (var newPosition in newData) {
+      Log.info('newPosition', newPosition.toString());
       if (newPosition.roomId != roomId) continue;
       List<CaroPosition> listTemps = currentData
           .where(
@@ -158,6 +164,7 @@ class CaroBloc extends Bloc<CaroEvent, CaroState> {
     }
 
     String? winnerId = await findWinner(currentData);
+    Log.info('winnerId', winnerId.toString());
     if (winnerId != null && winnerId.isNotEmpty == true) {
       add(BingoEvent(userId: winnerId));
     }
@@ -404,6 +411,7 @@ class CaroBloc extends Bloc<CaroEvent, CaroState> {
   RoomUser? getOpponent() {
     if (roomUsers.isEmpty) return null;
     if (roomUsers.length > maxSize || roomUsers.length == 1) return null;
+    opponentId = roomUsers[1].userId ?? '';
     return roomUsers[1];
   }
 

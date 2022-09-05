@@ -11,7 +11,9 @@
         "back": "Quay lại",
         "congratulation": "Chúc mừng",
         "confirmDialog": "Thông báo",
-        "pleaseWaitAnotherPlayer": "Vui lòng chờ người chơi khác..."
+        "pleaseWaitAnotherPlayer": "Vui lòng chờ người chơi khác...",
+        "newGame": "Ván mới",
+        "quitGame": "Thoát"
     },
     "game": {
         "caro": "Caro",
