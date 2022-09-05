@@ -381,7 +381,8 @@ class CaroBloc extends Bloc<CaroEvent, CaroState> {
       if (roomUsers.isEmpty) {
         isHost = roomUser.userId == userId;
       }
-      roomUsers.insert(isHost ? 0 : 1, roomUser);
+      roomUsers.add(roomUser);
+      roomUsers.sort((a, b) => (a.joinDate ?? 0) > (b.joinDate ?? 0) ? 1 : -1);
     }
     if (state is! ListPositionState) return;
     final currentState = state as ListPositionState;
