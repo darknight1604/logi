@@ -35,6 +35,8 @@ class CaroBloc extends Bloc<CaroEvent, CaroState> {
 
   late List<RoomUser> roomUsers = [];
 
+  final int maxSize = 2;
+
   CaroBloc(
     this.caroRepository,
     this.roomRepository,
@@ -129,9 +131,8 @@ class CaroBloc extends Bloc<CaroEvent, CaroState> {
 
   void _onListenCaroPosition(List<Map<String, dynamic>> listJsonData) async {
     if (state is! ListPositionState) return;
-    List<CaroPosition> currentData = [
-      ...(state as ListPositionState).listPosition
-    ];
+    final currentState = (state as ListPositionState);
+    List<CaroPosition> currentData = [...currentState.listPosition];
     if (currentData.isEmpty) return;
     List<CaroPosition> newData =
         listJsonData.map((e) => CaroPosition.fromJson(e)).toList();
@@ -159,7 +160,10 @@ class CaroBloc extends Bloc<CaroEvent, CaroState> {
     }
 
     add(
-      ReloadDataEvent(listPosition: currentData),
+      ReloadDataEvent(
+        listPosition: currentData,
+        roomUsers: currentState.roomUsers,
+      ),
     );
   }
 
@@ -358,9 +362,11 @@ class CaroBloc extends Bloc<CaroEvent, CaroState> {
     int countOpponent = listPosition
         .where((element) => element.isSelected && element.userId != userId)
         .length;
-
-    return countSeft == countOpponent - 1 ||
-        (countSeft == 0 && countOpponent == 0 && isHost);
+    if (countSeft == 0 && countOpponent == 0 && isHost) return true;
+    if (isHost) {
+      return countSeft == countOpponent;
+    }
+    return countSeft == countOpponent - 1;
   }
 
   void _onListenRoomUsers(List<Map<String, dynamic>> listJsonData) async {
@@ -370,13 +376,33 @@ class CaroBloc extends Bloc<CaroEvent, CaroState> {
         .toList();
     if (listRoomUser.isEmpty) return;
     for (var roomUser in listRoomUser) {
-      if (roomUsers.length >= 2) return;
+      if (roomUsers.length >= maxSize) return;
       if (roomUsers.contains(roomUser)) continue;
       if (roomUsers.isEmpty) {
         isHost = roomUser.userId == userId;
       }
-      roomUsers.add(roomUser);
+      roomUsers.insert(isHost ? 0 : 1, roomUser);
     }
+    if (state is! ListPositionState) return;
+    final currentState = state as ListPositionState;
+    add(
+      ReloadDataEvent(
+        listPosition: currentState.listPosition,
+        roomUsers: currentState.roomUsers,
+      ),
+    );
+  }
+
+  RoomUser? getHost() {
+    if (roomUsers.isEmpty) return null;
+    if (isHost) return roomUsers.first;
+    return null;
+  }
+
+  RoomUser? getOpponent() {
+    if (roomUsers.isEmpty || roomUsers.length < maxSize) return null;
+    if (isHost) return roomUsers[1];
+    return null;
   }
 
   @override

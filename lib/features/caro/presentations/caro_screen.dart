@@ -68,53 +68,78 @@ class _CaroScreenState extends State<CaroScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Container(
-                        width: 500,
-                        height: 500,
-                        decoration: BoxDecoration(
-                          border: Border.all(width: 0.25),
-                        ),
-                        child: BlocConsumer<CaroBloc, CaroState>(
-                          listener: (context, state) {
-                            if (state is BingoState) {
-                              _showDialogWinner(context, state.winnerNickname);
-                              return;
-                            }
-                          },
-                          buildWhen: (previous, current) {
-                            return current is! NotYourTurnState &&
-                                current is! BingoState;
-                          },
-                          builder: (context, state) {
-                            if (state is! ListPositionState) {
-                              return Center(
-                                child: Text(
-                                  LocaleKeys.commonComingSoon.tr(),
-                                  style: TextStyleManager.normalText.copyWith(
-                                    fontStyle: FontStyle.italic,
+                      BlocConsumer<CaroBloc, CaroState>(
+                        listener: (context, state) {
+                          if (state is BingoState) {
+                            _showDialogWinner(context, state.winnerNickname);
+                            return;
+                          }
+                        },
+                        buildWhen: (previous, current) {
+                          return current is! NotYourTurnState &&
+                              current is! BingoState;
+                        },
+                        builder: (context, state) {
+                          return Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Container(
+                                width: 500,
+                                height: 500,
+                                decoration: BoxDecoration(
+                                  border: Border.all(width: 0.25),
+                                ),
+                                child: (state is! ListPositionState)
+                                    ? Center(
+                                        child: Text(
+                                          LocaleKeys.commonComingSoon.tr(),
+                                          style: TextStyleManager.normalText
+                                              .copyWith(
+                                            fontStyle: FontStyle.italic,
+                                          ),
+                                        ),
+                                      )
+                                    : GridView.count(
+                                        // Create a grid with 2 columns. If you change the scrollDirection to
+                                        // horizontal, this produces 2 rows.
+                                        crossAxisCount: CaroBloc.maxColumn,
+                                        // Generate 100 widgets that display their index in the List.
+                                        children: List.generate(
+                                            CaroBloc.maxColumn *
+                                                CaroBloc.maxRow, (index) {
+                                          CaroPosition position =
+                                              state.listPosition[index];
+                                          return _CaroPositionItemWidget(
+                                            position: position,
+                                            userId: widget.userId,
+                                            nickname: widget.nickname,
+                                          );
+                                        }),
+                                      ),
+                              ),
+                              if (state is ListPositionState &&
+                                  state.roomUsers.length < caroBloc.maxSize)
+                                Container(
+                                  height: 500,
+                                  width: 500,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.withOpacity(0.9),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      LocaleKeys.commonPleaseWaitAnotherPlayer
+                                          .tr(),
+                                      style:
+                                          TextStyleManager.largeText.copyWith(
+                                        color: Colors.white,
+                                        fontStyle: FontStyle.italic,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              );
-                            }
-                            return GridView.count(
-                              // Create a grid with 2 columns. If you change the scrollDirection to
-                              // horizontal, this produces 2 rows.
-                              crossAxisCount: CaroBloc.maxColumn,
-                              // Generate 100 widgets that display their index in the List.
-                              children: List.generate(
-                                  CaroBloc.maxColumn * CaroBloc.maxRow,
-                                  (index) {
-                                CaroPosition position =
-                                    state.listPosition[index];
-                                return _CaroPositionItemWidget(
-                                  position: position,
-                                  userId: widget.userId,
-                                  nickname: widget.nickname,
-                                );
-                              }),
-                            );
-                          },
-                        ),
+                            ],
+                          );
+                        },
                       ),
                       const _DescriptionWidget(),
                     ],
@@ -204,8 +229,8 @@ class _DescriptionWidget extends StatelessWidget {
                     SizedBoxWidget.w10,
                     Text(
                       caroBloc.isHost
-                          ? LocaleKeys.caroScreenYourColor.tr()
-                          : LocaleKeys.caroScreenOpponentColor.tr(),
+                          ? (caroBloc.getHost()?.nickName ?? '')
+                          : (caroBloc.getOpponent()?.nickName ?? ''),
                     ),
                   ],
                 ),
@@ -218,8 +243,8 @@ class _DescriptionWidget extends StatelessWidget {
                     SizedBoxWidget.w10,
                     Text(
                       caroBloc.isHost
-                          ? LocaleKeys.caroScreenOpponentColor.tr()
-                          : LocaleKeys.caroScreenYourColor.tr(),
+                          ? (caroBloc.getOpponent()?.nickName ?? '')
+                          : (caroBloc.getHost()?.nickName ?? ''),
                     ),
                   ],
                 ),

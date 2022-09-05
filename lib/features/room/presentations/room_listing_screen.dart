@@ -176,7 +176,7 @@ class BottomActionGroupWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 100,
+      height: 80,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

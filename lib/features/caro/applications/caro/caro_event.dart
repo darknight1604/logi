@@ -21,6 +21,7 @@ class CaroEvent with _$CaroEvent {
 
   const factory CaroEvent.reloadData({
     required List<CaroPosition> listPosition,
+    required List<RoomUser> roomUsers,
   }) = ReloadDataEvent;
 
   const factory CaroEvent.bingo({

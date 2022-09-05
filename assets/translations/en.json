@@ -10,7 +10,8 @@
         "unknown": "Unknow",
         "back": "Back",
         "congratulation": "Congratulation",
-        "confirmDialog": "Confirm dialog"
+        "confirmDialog": "Confirm dialog",
+        "pleaseWaitAnotherPlayer": "Please wait another player..."
     },
     "game": {
         "caro": "Caro",
