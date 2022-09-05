@@ -74,7 +74,7 @@ class CaroBloc extends Bloc<CaroEvent, CaroState> {
         );
       }
     }
-
+    await Future.delayed(const Duration(seconds: 1));
     roomUsers = await roomRepository.getListRoomUser(roomId);
     isHost = userId == roomUsers.first.userId;
     emit(
@@ -404,9 +404,9 @@ class CaroBloc extends Bloc<CaroEvent, CaroState> {
   }
 
   RoomUser? getOpponent() {
-    if (roomUsers.isEmpty || roomUsers.length < maxSize) return null;
-    if (isHost) return roomUsers[1];
-    return null;
+    if (roomUsers.isEmpty) return null;
+    if (roomUsers.length < maxSize) return null;
+    return roomUsers[1];
   }
 
   @override
