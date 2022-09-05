@@ -378,12 +378,10 @@ class CaroBloc extends Bloc<CaroEvent, CaroState> {
         .where((element) => element.roomId == roomId)
         .toList();
     if (listRoomUser.isEmpty) return;
+    if (roomUsers.length >= maxSize) return;
+    roomUsers = [];
     for (var roomUser in listRoomUser) {
-      if (roomUsers.length >= maxSize) return;
       if (roomUsers.contains(roomUser)) continue;
-      if (roomUsers.isEmpty) {
-        isHost = roomUser.userId == userId;
-      }
       roomUsers.add(roomUser);
       roomUsers.sort((a, b) => (a.joinDate ?? 0) > (b.joinDate ?? 0) ? 1 : -1);
     }
@@ -392,20 +390,20 @@ class CaroBloc extends Bloc<CaroEvent, CaroState> {
     add(
       ReloadDataEvent(
         listPosition: currentState.listPosition,
-        roomUsers: currentState.roomUsers,
+        roomUsers: roomUsers,
       ),
     );
   }
 
   RoomUser? getHost() {
     if (roomUsers.isEmpty) return null;
-    if (isHost) return roomUsers.first;
-    return null;
+    if (roomUsers.length > maxSize) return null;
+    return roomUsers.first;
   }
 
   RoomUser? getOpponent() {
     if (roomUsers.isEmpty) return null;
-    if (roomUsers.length < maxSize) return null;
+    if (roomUsers.length > maxSize || roomUsers.length == 1) return null;
     return roomUsers[1];
   }
 

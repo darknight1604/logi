@@ -228,9 +228,7 @@ class _DescriptionWidget extends StatelessWidget {
                     ),
                     SizedBoxWidget.w10,
                     Text(
-                      caroBloc.isHost
-                          ? (caroBloc.getHost()?.nickName ?? '')
-                          : (caroBloc.getOpponent()?.nickName ?? ''),
+                      caroBloc.getHost()?.nickName ?? '',
                     ),
                   ],
                 ),
@@ -242,9 +240,7 @@ class _DescriptionWidget extends StatelessWidget {
                     ),
                     SizedBoxWidget.w10,
                     Text(
-                      caroBloc.isHost
-                          ? (caroBloc.getOpponent()?.nickName ?? '')
-                          : (caroBloc.getHost()?.nickName ?? ''),
+                      caroBloc.getOpponent()?.nickName ?? '',
                     ),
                   ],
                 ),
