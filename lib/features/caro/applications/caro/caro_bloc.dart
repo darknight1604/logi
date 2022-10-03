@@ -77,7 +77,7 @@ class CaroBloc extends Bloc<CaroEvent, CaroState> {
     }
     await Future.delayed(const Duration(seconds: 1));
     roomUsers = await roomRepository.getListRoomUser(roomId);
-    isHost = userId == roomUsers.first.userId;
+    isHost = roomUsers.isNotEmpty && userId == roomUsers.first.userId;
     emit(
       ListPositionState(
         listPosition: listPosition,
@@ -97,7 +97,7 @@ class CaroBloc extends Bloc<CaroEvent, CaroState> {
       listPosition,
     );
     if (!allow) {
-      emit(const NotYourTurnState());
+      // emit(const NotYourTurnState());
       return;
     }
 
@@ -136,10 +136,18 @@ class CaroBloc extends Bloc<CaroEvent, CaroState> {
 
   void _onListenCaroPosition(List<Map<String, dynamic>> listJsonData) async {
     Log.info('listJsonData', listJsonData.toString());
-    if (listJsonData.isEmpty) return;
-    Log.info('currentState', state.toString());
+    Log.info('currentState', state.runtimeType.toString());
     if (state is! ListPositionState) return;
     final currentState = (state as ListPositionState);
+    if (listJsonData.isEmpty) {
+      add(
+        InitDefaultData(
+          roomId: roomId,
+          userId: userId,
+        ),
+      );
+      return;
+    }
     List<CaroPosition> currentData = [...currentState.listPosition];
     if (currentData.isEmpty) return;
     List<CaroPosition> newData =

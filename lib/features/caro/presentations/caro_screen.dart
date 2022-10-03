@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logi/core/components/padding_wrapper.dart';
 import 'package:logi/core/components/sized_box_widget.dart';
+import 'package:logi/core/helpers/logi_route.dart';
 import 'package:logi/core/helpers/style_manager.dart';
 import 'package:logi/features/caro/applications/caro/caro_bloc.dart';
 import 'package:logi/features/caro/domains/models/caro_position.dart';
@@ -62,7 +63,6 @@ class _CaroScreenState extends State<CaroScreen> {
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                // crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -149,7 +149,7 @@ class _CaroScreenState extends State<CaroScreen> {
             PaddingWrapper(
               child: BottomActionGroupWidget(
                 onPop: () {
-                  if (caroBloc.isHost) {
+                  if (caroBloc.roomUsers.length == 1) {
                     caroBloc.add(
                       ClearPositionEvent(
                         roomId: widget.roomId,
@@ -224,25 +224,26 @@ class _CaroScreenState extends State<CaroScreen> {
   }
 
   void _newGame(final BuildContext buildContext) {
-    if (caroBloc.isHost) {
-      caroBloc.add(
-        ClearPositionEvent(
-          roomId: widget.roomId,
-        ),
-      );
-    }
+    caroBloc.add(
+      ClearPositionEvent(
+        roomId: widget.roomId,
+      ),
+    );
     Navigator.pop(buildContext);
   }
 
   void _quitGame(final BuildContext buildContext) {
-    if (caroBloc.isHost) {
+    if (caroBloc.roomUsers.length == 1) {
       caroBloc.add(
         ClearPositionEvent(
           roomId: widget.roomId,
         ),
       );
     }
-    Navigator.popUntil(buildContext, (route) => route.isFirst);
+    Navigator.popUntil(
+      buildContext,
+      (route) => route.settings.name == LogiRoute.welcomeScreen,
+    );
   }
 }
 
@@ -329,10 +330,12 @@ class _CaroPositionItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final caroBloc = BlocProvider.of<CaroBloc>(context);
+
     return GestureDetector(
       onTap: () {
         if (position.isSelected) return;
-        BlocProvider.of<CaroBloc>(context).add(
+        caroBloc.add(
           SelectPositionEvent(
             userId: userId,
             nickname: nickname,
@@ -344,7 +347,7 @@ class _CaroPositionItemWidget extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(width: 0.25),
         ),
-        child: position.isSelfSelected(userId)
+        child: caroBloc.getHost()?.userId == position.userId
             ? const Icon(
                 Icons.close_outlined,
                 color: Colors.blue,
